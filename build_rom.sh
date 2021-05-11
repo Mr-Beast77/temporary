@@ -4,6 +4,7 @@ git clone https://github.com/sarthakroy2002/local_manifest.git --depth=1 .repo/l
 repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j$(nproc --all)
 
 # build rom
+source build/envsetup.sh
 lunch lineage_RMX2050-userdebug
 export SKIP_ABI_CHECKS=true
 export SKIP_API_CHECKS=true
