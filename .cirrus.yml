@@ -1,7 +1,15 @@
 task:
   name: Build
-  container:
-    image: apon77/aosp:ccache
+  persistent_worker:
+    isolation:
+      container:
+        image: apon77/aosp:ccache
+        cpu: 24
+        memory: 60g
+        volumes:
+          - /home/cirrus/roms:/home/ci/roms
+          - /home/cirrus/ccache:/home/ci/ccache
+          - /home/cirrus/.config:/home/ci/.config
   env:
     USE_CCACHE: 1
     ROM_NAME: "grep init $CIRRUS_WORKING_DIR/build_rom.sh| cut -d / -f 4"
