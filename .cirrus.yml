@@ -1,19 +1,11 @@
 task:
   name: Build
+  timeout_in: 3h
+  container:
+    image: apon77/aosp:ccache
   env:
     USE_CCACHE: 1
     ROM_NAME: "sed -n '4p' < $CIRRUS_WORKING_DIR/build_rom.sh | cut -d / -f 4"
-  timeout_in: 3h
-  persistent_worker:
-    isolation:
-      container:
-        image: apon77/aosp:ccache
-        cpu: 24
-        memory: 60g
-        volumes:
-          - /home/cirrus/roms:/home/ci/roms
-          - /home/cirrus/ccache:/home/ci/ccache
-          - /home/cirrus/.config:/home/ci/.config
   build_script:
     - set -exv
     - mkdir -p ~/roms/$(bash -c "$ROM_NAME")
