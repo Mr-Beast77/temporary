@@ -27,7 +27,8 @@ task:
   upload_script:
     - set -exv
     - cd ~/roms/$(bash -c "$ROM_NAME")
-    - tail $CIRRUS_WORKING_DIR/build_rom.sh -n 1
+    - command=$(tail $CIRRUS_WORKING_DIR/build_rom.sh -n 1)
+    - bash -c "$command"
   remove_script:
     - set -exv
     - cd ~/roms/$(bash -c "$ROM_NAME")
