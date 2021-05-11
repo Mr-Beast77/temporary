@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # sync rom
 repo init --depth=1 -u git://github.com/AospExtended/manifest.git -b 11.x -g default,-device,-mips,-darwin,-notdefault
 git clone https://github.com/Apon77Lab/android_.repo_local_manifests.git --depth 1 -b aex .repo/local_manifests --depth=1
@@ -11,4 +9,4 @@ lunch aosp_mido-user
 m bootimage
 
 # upload rom
-time rclone copy out/target/product/mido/AospExtended*.zip cirrus:mido -P
+rclone copy out/target/product/mido/AospExtended*.zip cirrus:mido -P

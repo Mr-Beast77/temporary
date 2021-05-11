@@ -5,14 +5,28 @@ task:
     image: apon77/aosp:ccache
   env:
     USE_CCACHE: 1
-    ROM_NAME: "sed -n '4p' < $CIRRUS_WORKING_DIR/build_rom.sh | cut -d / -f 4"
-  build_script:
+    ROM_NAME: "grep init $CIRRUS_WORKING_DIR/build_rom.sh| cut -d / -f 4"
+  sync_script:
     - set -exv
     - mkdir -p ~/roms/$(bash -c "$ROM_NAME")
     - cd ~/roms/$(bash -c "$ROM_NAME")
     - rm -rf .repo/local_manifests
     - export CCACHE_DIR=/home/ci/ccache/$(bash -c "$ROM_NAME")/$(grep unch $CIRRUS_WORKING_DIR/build_rom.sh | cut -d _ -f 2 | cut -d - -f 1)
     - ccache -z
-    - bash $CIRRUS_WORKING_DIR/build_rom.sh
+    - head $CIRRUS_WORKING_DIR/build_rom.sh -n $(expr $(grep build/ $CIRRUS_WORKING_DIR/build_rom.sh -n | cut -f1 -d:) - 1)
+  build_script:
+    - set -exv
+    - cd ~/roms/$(bash -c "$ROM_NAME")
+    - tail $CIRRUS_WORKING_DIR/build_rom.sh -n $(expr $(grep build/ $CIRRUS_WORKING_DIR/build_rom.sh -n | cut -f1 -d:) - 1)| head -n -1
+  ccache_stats_script:
+    - set -exv
+    - export CCACHE_DIR=/home/ci/ccache/$(bash -c "$ROM_NAME")/$(grep unch $CIRRUS_WORKING_DIR/build_rom.sh | cut -d _ -f 2 | cut -d - -f 1)
     - ccache -s
+  upload_script:
+    - set -exv
+    - cd ~/roms/$(bash -c "$ROM_NAME")
+    - tail $CIRRUS_WORKING_DIR/build_rom.sh -n 1
+  remove_script:
+    - set -exv
+    - cd ~/roms/$(bash -c "$ROM_NAME")
     - rm -rf out/target/product/$(grep unch $CIRRUS_WORKING_DIR/build_rom.sh | cut -d _ -f 2 | cut -d - -f 1)
